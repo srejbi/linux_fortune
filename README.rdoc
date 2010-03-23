@@ -1,0 +1,67 @@
+= LinuxFortune
+
+* http://github.com/#{github_username}/#{project_name}
+
+== DESCRIPTION:
+
+Provides a wrapper to the 'fortune' program on linux (and unix /parameters
+might differ/) platforms. As most (good) web servers are running on these
+platforms, a 'local' fortune gem seemed like a good idea to play around and
+discover ruby gem development through a practical example.
+
+If you need a network-based fortune service, though, you might want to check out
+"lacco's ruby_fortunes":http://github.com/lacco/ruby-fortunes
+
+== FEATURES:
+
+* allows generating messages from all or specific fortune database modules
+* possibility to generate short (up to LinuxFortune.short_length characters) messages
+
+== ISSUES:
+
+* LinuxFortune.long = true seem to have no effect due to issue with fortune (?)
+
+== SYNOPSIS:
+
+To use it:
+
+  require 'rubygems'
+  require 'linux_fortune'
+  f = LinuxFortune.generate("chucknorris")
+  puts f.body
+
+== REQUIREMENTS:
+
+* fortune must be installed, with some fortune db modules
+
+== INSTALL:
+
+* gentoo: 
+  sudo emerge fortune
+* ubuntu, debian:
+  apt-get install fortune
+
+== LICENSE:
+
+(The MIT License)
+
+Copyright (c) 2010 György Schreiber
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,0 +1,7 @@
+History.txt
+Manifest
+README.rdoc
+Rakefile
+lib/linux_fortune.rb
+test/test_helper.rb
+test/test_linux_fortune.rb
