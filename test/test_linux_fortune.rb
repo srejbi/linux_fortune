@@ -25,7 +25,7 @@ class TestLinuxFortune < Test::Unit::TestCase
     assert LinuxFortune.short           # short should be set to true
     assert LinuxFortune.long == false   # long to false
     assert LinuxFortune.fortune_options.include?("-s")
-    assert LinuxFortune.fortune_options.include?("-n")
+    assert LinuxFortune.fortune_options.include?("-n") || LinuxFortune.short_length == 160
     10.times do                             # check multiple times if the generated length is ok
       lf = LinuxFortune.generate
       assert lf.body.size < LinuxFortune.short_length # check if actual size is less than the max. short length
@@ -38,7 +38,7 @@ class TestLinuxFortune < Test::Unit::TestCase
     assert LinuxFortune.long            # long should be set to short
     assert LinuxFortune.short == false  # short to false
     assert LinuxFortune.fortune_options.include?("-l")
-    assert LinuxFortune.fortune_options.include?("-n")
+    assert LinuxFortune.fortune_options.include?("-n") || LinuxFortune.short_length == 160
     5.times do                           # check multiple times if the generated length is ok
       lf = LinuxFortune.generate
       #puts "#{lf.body.size} characters"
@@ -64,11 +64,15 @@ class TestLinuxFortune < Test::Unit::TestCase
   # test if fortune messages are from the sources requested
   # TODO pick random sources from sources
   def test_fortune_from_sources
+    # just get whatever length fortunes
+    LinuxFortune.short=false
+    LinuxFortune.long=false
+    # check multiple times
     5.times do
-      lf = LinuxFortune.generate(["chucknorris"])
+      lf = LinuxFortune.generate(["chucknorris","linux"])
       #puts lf.source
       #puts lf.source.split("/").last
-      assert ["chucknorris"].include?(lf.source.split("/").last.strip)
+      assert ["chucknorris","linux"].include?(lf.source.split("/").last.strip)
     end
   end
 end

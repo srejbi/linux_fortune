@@ -169,7 +169,7 @@ module LinuxFortune
     srclist.each do |source|
       weight,src = source.strip.split
       if src.match(/(\/.*)*/)
-        puts "#{src} -> #{weight}"
+        #puts "#{src} -> #{weight}"
         path = src
       else
         sources << FortuneSource.new( :path => path, :source => src, :weight => weight )
@@ -180,8 +180,8 @@ module LinuxFortune
 
   # executes the fortune program
   def self.fortune(sources = nil)
-    puts "executing #{self.binary_path} -c #{fortune_options} #{sources.each { |s| s; } unless sources.nil?} 2>&1"
-    `#{self.binary_path} -c #{fortune_options} #{sources.each { |s| s; } unless sources.nil?} 2>&1`
+    #puts "executing #{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.strip }.join(" ") unless sources.nil?} 2>&1"
+    `#{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.strip }.join(" ") unless sources.nil?} 2>&1`
   end
 
   # generates a fortune message
