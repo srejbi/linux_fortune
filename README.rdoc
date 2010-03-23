@@ -1,6 +1,6 @@
 = LinuxFortune
 
-* http://github.com/#{github_username}/#{project_name}
+* http://github.com/srejbi/linux_fortune_gem
 
 == DESCRIPTION:
 
@@ -10,7 +10,7 @@ platforms, a 'local' fortune gem seemed like a good idea to play around and
 discover ruby gem development through a practical example.
 
 If you need a network-based fortune service, though, you might want to check out
-"lacco's ruby_fortunes":http://github.com/lacco/ruby-fortunes
+lacco's ruby_fortunes at http://github.com/lacco/ruby-fortunes
 
 == FEATURES:
 
