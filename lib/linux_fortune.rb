@@ -89,13 +89,16 @@ module LinuxFortune
     @@ignore_case
   end
 
-  # fortune source
+  # fortune source class
+  # basically a couple of strings to construct the db file path
+  # and the weight (in percentage) of the file (compared to 100%)
   class FortuneSource
     @path = "/usr/share/fortune"
     @source = ""
-    @weight = 0
+    @weight = ""
 
-    def init(source = nil, path = "/usr/share/fortune", weight = nil )
+    # create a new source reference with source, path and weight
+    def initialize(source = nil, path = "/usr/share/fortune", weight = nil )
       @source = source
       @path = path
       @weight = weight
@@ -129,6 +132,11 @@ module LinuxFortune
     def fullpath
       File.join(@path, @source)
     end
+
+    # gets a fortune message from this source
+    def fortune
+      LinuxFortune.generate([self.fullpath])
+    end
   end
 
 
@@ -137,6 +145,21 @@ module LinuxFortune
     @source = ""
     @body = ""
 
+    # pass the string from the fortune program
+    def initialize(fortunestring)
+      # check lines of the string, extract source and separate from the rest of the body
+      src = ""
+      bod = ""
+      fortunestring.each do |s|
+        if s.match(/\(.*\)/) and src.empty?
+          src = s.gsub(/(^\()|(\)$)/, "").strip
+        else
+          bod += s unless s.match(/^%\n/)
+        end
+      end
+      @source = src
+      @body = bod
+    end
     # attribute accessors
 
     # gets the fortune text
@@ -168,11 +191,10 @@ module LinuxFortune
     srclist = `#{self.binary_path} -f 2>&1`
     srclist.each do |source|
       weight,src = source.strip.split
-      if src.match(/(\/.*)*/)
-        #puts "#{src} -> #{weight}"
+      if src.match(/\/.*/)
         path = src
       else
-        sources << FortuneSource.new( :path => path, :source => src, :weight => weight )
+        sources << LinuxFortune::FortuneSource.new( src, path, weight )
       end
     end
     sources
@@ -187,17 +209,7 @@ module LinuxFortune
   # generates a fortune message
   # <tt>sources</tt> - array of sources
   def self.generate(sources = nil)
-    lf = LinuxFortune::Fortune.new
-    lf.body = ""
-    ftn = self.fortune(sources)
-    ftn.each do |s|
-      if s.match(/\(.*\)/)
-        lf.source = s.gsub(/(^\()|(\)$)/, "")
-      else
-        lf.body << s unless s.match(/^%\n/)
-      end
-    end
-    lf
+    LinuxFortune::Fortune.new( self.fortune(sources) )
   end
 
   # searches fortune sources and returns hits

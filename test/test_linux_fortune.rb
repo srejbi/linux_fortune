@@ -48,7 +48,7 @@ class TestLinuxFortune < Test::Unit::TestCase
   end
 
   # Fortune.body should be the same as Fortune.to_s
-  def test_to_s
+  def test_fortune_to_s
     lf = LinuxFortune.generate
     assert lf.body == lf.to_s
   end
@@ -56,17 +56,29 @@ class TestLinuxFortune < Test::Unit::TestCase
   # test that there are sources
   # TODO refine test case
   def test_sources
-    src = LinuxFortune.get_sources
-    #src.each { |s| s.strip!; weight,name = s.split(" "); puts "#{name} -> #{weight}" }
-    assert !src.nil?
-  end
-
-  # test if fortune messages are from the sources requested
-  # TODO pick random sources from sources
-  def test_fortune_from_sources
     # just get whatever length fortunes
     LinuxFortune.short=false
     LinuxFortune.long=false
+
+    sources = LinuxFortune.get_sources
+    assert !sources.nil? and sources.size > 0
+  end
+
+  # test fortune from source
+  def test_fortune_from_each_source
+    sources = LinuxFortune.get_sources
+    fortunes = []
+    sources.each do |src|
+      fortunes << src.fortune
+      assert fortunes.size > 0
+      #puts "#{fortunes.last.source} --- #{src.fullpath}"
+      assert fortunes.last.source == src.fullpath
+    end
+  end
+
+  # test if fortune messages are from the sources requested
+  # TODO pick random sources from sources once sources code is functional
+  def test_fortune_from_sources
     # check multiple times
     5.times do
       lf = LinuxFortune.generate(["chucknorris","linux"])

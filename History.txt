@@ -3,8 +3,13 @@
 * 1 major enhancement:
   * Initial release
 
-=== 0.0.1 2010-03-24
+=== 0.0.2 2010-03-24
 
 * 2 fixes:
   * debug puts messages commented out
   * test failures / errors fixed
+
+=== 0.0.3 2010-03-24
+
+* 1 major enhancement:
+  * fortune sources listing / selection
