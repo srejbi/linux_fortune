@@ -92,46 +92,21 @@ module LinuxFortune
   # fortune source class
   # basically a couple of strings to construct the db file path
   # and the weight (in percentage) of the file (compared to 100%)
-  class FortuneSource
-    @path = "/usr/share/fortune"
-    @source = ""
-    @weight = ""
-
+  FortuneSource = Class.new do
     # create a new source reference with source, path and weight
     def initialize(source = nil, path = "/usr/share/fortune", weight = nil )
       @source = source
       @path = path
       @weight = weight
     end
-
-    # sets the fortune source path
-    def path=(srcpath)
-      @path = srcpath
-    end
-
-    # gets the source path (directory with source)
-    def path
-      @path
-    end
-
-    # sets the source file name (file in FortuneSource.path)
-    def source=(src)
-      @source = src
-    end
-
-    # gets source file name
-    def source
-      @source
-    end
-
-    def weight
-      @weight
-    end
+    attr_reader :source, :path, :weight
 
     # gets full path to the source
     def fullpath
       File.join(@path, @source)
     end
+    # gets the full path to the message
+    alias_method(:to_s, :fullpath)
 
     # gets a fortune message from this source
     def fortune
@@ -141,10 +116,7 @@ module LinuxFortune
 
 
   # The Fortune class is basicly 2 strings, source and body
-  class Fortune
-    @source = ""
-    @body = ""
-
+  Fortune = Class.new do
     # pass the string from the fortune program
     def initialize(fortunestring)
       # check lines of the string, extract source and separate from the rest of the body
@@ -162,27 +134,12 @@ module LinuxFortune
     end
     # attribute accessors
 
-    # gets the fortune text
-    def body
-      @body
-    end
+    attr_reader :body, :source
+
     # gets the fortune text (alias for body)
     alias_method(:to_s, :body)
-
-    # gets the fortune source
-    def source
-      @source
-    end
-
-    def body=(text = "")
-      @body = text
-    end
-
-    def source=(src = "")
-      @source = src
-    end
-
   end
+  
 
   # list available sources
   def self.get_sources
@@ -203,7 +160,7 @@ module LinuxFortune
   # executes the fortune program
   def self.fortune(sources = nil)
     #puts "executing #{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.strip }.join(" ") unless sources.nil?} 2>&1"
-    `#{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.strip }.join(" ") unless sources.nil?} 2>&1`
+    `#{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.to_s }.join(" ") unless sources.nil?} 2>&1`
   end
 
   # generates a fortune message
