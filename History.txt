@@ -13,3 +13,9 @@
 
 * 1 major enhancement:
   * fortune sources listing / selection
+
+=== 0.0.4 2010-03-25
+
+* 2 minor enhancements:
+  * some of "gregory's anonymous class hacks":http://blog.rubybestpractices.com/posts/gregory/anonymous_class_hacks.html rbp's implemented
+  * updated testing
