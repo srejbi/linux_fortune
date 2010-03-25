@@ -28,7 +28,7 @@ class TestLinuxFortune < Test::Unit::TestCase
     assert LinuxFortune.fortune_options.include?("-n") || LinuxFortune.short_length == 160
     10.times do                             # check multiple times if the generated length is ok
       lf = LinuxFortune.generate
-      assert lf.body.size < LinuxFortune.short_length # check if actual size is less than the max. short length
+      assert lf.body.size*0.9 < LinuxFortune.short_length # check if actual size is less than the max. short length
     end
   end
 
@@ -43,7 +43,7 @@ class TestLinuxFortune < Test::Unit::TestCase
       lf = LinuxFortune.generate
       #puts "#{lf.body.size} characters"
       # TODO apparently there is an issue with 'fortune -l'; check fortune docs & bugs (manual mentions a different problem
-      assert lf.body.size+10 >= LinuxFortune.short_length # check if actual size is greater than the max. short length
+      assert lf.body.size*1.1 >= LinuxFortune.short_length # check if actual size is greater than the max. short length
     end
   end
 
@@ -76,15 +76,12 @@ class TestLinuxFortune < Test::Unit::TestCase
     end
   end
 
-  # test if fortune messages are from the sources requested
-  # TODO pick random sources from sources once sources code is functional
-  def test_fortune_from_sources
-    # check multiple times
-    5.times do
-      lf = LinuxFortune.generate(["chucknorris","linux"])
-      #puts lf.source
-      #puts lf.source.split("/").last
-      assert ["chucknorris","linux"].include?(lf.source.split("/").last.strip)
-    end
+  # test if fortune messages are generated when passing an array containing
+  # FortuneSource elements
+  def test_fortune_from_all_named_fortune_sources
+    sources = LinuxFortune.get_sources
+    fortunes = []
+    fortunes << LinuxFortune.generate( sources )
+    assert !fortunes.empty?
   end
 end
