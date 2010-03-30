@@ -1,6 +1,5 @@
 module LinuxFortune
   # <tt>@@binary_path</tt> - path to the 'fortune' binary
-  #mattr_accessor :binary_path
   @@binary_path = "/usr/bin/fortune"
 
   # sets the path of the linux fortune program ("/usr/bin/fortune" by default)
@@ -117,27 +116,52 @@ module LinuxFortune
 
   # The Fortune class is basicly 2 strings, source and body
   Fortune = Class.new do
+    # attribute accessors
+    attr_reader :body, :source
+
     # pass the string from the fortune program
     def initialize(fortunestring)
       # check lines of the string, extract source and separate from the rest of the body
-      src = ""
-      bod = ""
-      fortunestring.each do |s|
-        if s.match(/\(.*\)/) and src.empty?
-          src = s.gsub(/(^\()|(\)$)/, "").strip
-        else
-          bod += s unless s.match(/^%\n/)
+      temp_source = ""
+      temp_body = ""
+      fortunestring.each do |fortune_line|
+        # in fortune strings, source is a path included in brackets
+        if fortune_line.match(/\(.*\)/) and temp_source.empty?
+          temp_source = fortune_line.gsub(/(^\()|(\)$)/, "").strip
+        else  # if not a source
+          # it is a body line, unless it is a 'field separator' - a line with a single percent sign
+          temp_body += fortune_line unless fortune_line.match(/^%\n/)
         end
       end
-      @source = src
-      @body = bod
+      @source = temp_source
+      @body = temp_body
     end
-    # attribute accessors
-
-    attr_reader :body, :source
 
     # gets the fortune text (alias for body)
     alias_method(:to_s, :body)
+
+    # processes a fortune search output string and returns an array of fortunes
+    def self.fortunes(fortunesstring)
+      ret = []
+      # check lines of the string, extract source and separate from the rest of the body
+      temp_source = ""
+      temp_body = ""
+      # parse results string
+      fortunesstring.each do |fortunes_line|
+        if fortunes_line.strip.match(/^%$/)     # field separator?
+          if temp_source != "" and temp_body != ""
+            fortunesource = "#{temp_source}\n%\n#{temp_body}"
+            ret << Fortune.new(fortunesource)
+          end
+          temp_body = ""
+        elsif fortunes_line.match(/^\(.*\)$/)   # source field?
+          temp_source = fortunes_line.strip
+        else                                    # if not a source or a separator
+          temp_body += fortunes_line
+        end
+      end
+      ret
+    end
   end
   
 
@@ -160,7 +184,7 @@ module LinuxFortune
   # executes the fortune program
   def self.fortune(sources = nil)
     #puts "executing #{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.strip }.join(" ") unless sources.nil?} 2>&1"
-    `#{self.binary_path} -c #{fortune_options} #{sources.each { |s| s.to_s }.join(" ") unless sources.nil?} 2>&1`
+    `#{self.binary_path} -c #{fortune_options} #{sources.each { |source| source.to_s }.join(" ") unless sources.nil?} 2>&1`
   end
 
   # generates a fortune message
@@ -170,8 +194,16 @@ module LinuxFortune
   end
 
   # searches fortune sources and returns hits
-  def self.search(pattern = nil)
-    # TODO
+  # <tt>pattern</tt> - search pattern (grep-like)
+  # <tt>sources</tt> - array of sources to be searched (all if not specified)
+  def self.search(pattern = nil, sources = nil)
+    # reset long / short filters
+    LinuxFortune.long = false
+    LinuxFortune.short = false
+    # run fortune
+    results = `#{self.binary_path} -c -m "#{pattern.gsub(/"/, '\\"')}" #{fortune_options} #{sources.each { |source| source.to_s }.join(" ") unless sources.nil?} 2>&1`
+    # process results
+    LinuxFortune::Fortune.fortunes(results)
   end
 
   protected

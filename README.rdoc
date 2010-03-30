@@ -30,6 +30,17 @@ To use it:
   f = LinuxFortune.generate("chucknorris")
   puts f.body
 
+To search fortunes:
+
+  require 'rubygems'
+  require 'linux_fortune'
+  fs = LinuxFortune.search("develop")
+  puts "#{fs.size} hits:"
+  fs.each do |f|
+    puts f.source
+    puts f.body
+  end
+
 == REQUIREMENTS:
 
 * fortune must be installed, with some fortune db modules

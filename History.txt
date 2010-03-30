@@ -19,3 +19,10 @@
 * 2 minor enhancements:
   * some of "gregory's anonymous class hacks":http://blog.rubybestpractices.com/posts/gregory/anonymous_class_hacks.html rbp's implemented
   * updated testing
+
+=== 0.0.5 2010-03-30
+
+* 1 major enhancement:
+  * fortunes can be searched
+* minor enhancements:
+  * code comments & cleanups

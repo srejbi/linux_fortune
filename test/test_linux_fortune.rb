@@ -84,4 +84,15 @@ class TestLinuxFortune < Test::Unit::TestCase
     fortunes << LinuxFortune.generate( sources )
     assert !fortunes.empty?
   end
+
+  # test that search executes, array of fortunes is returned
+  def test_search
+    fortunes = LinuxFortune.search('develop', ['chucknorris'])
+    assert fortunes.is_a?(Array)
+    assert fortunes.size > 0
+    fortunes.each do |fortune|
+      assert fortune.is_a?(LinuxFortune::Fortune)
+      assert fortune.source.include?('chucknorris')
+    end
+  end
 end
